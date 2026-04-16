@@ -1,0 +1,301 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.22), transparent 35%),
+        radial-gradient(circle at 82% 20%, rgba(0, 193, 255, 0.22), transparent 34%),
+        linear-gradient(165deg, #10111a, #0f2230 52%, #162f3d 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100dvh;
+    height: 100dvh;
+    color: #f7f7f7;
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+.game-container {
+    position: relative;
+    width: min(1120px, 100%);
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0 auto;
+    padding: calc(8px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.game-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.48);
+    box-shadow: inset 0 -8px 14px rgba(255, 255, 255, 0.12), 0 0 22px rgba(255, 255, 255, 0.2);
+}
+
+.game-title {
+    flex: 1 0 100%;
+    font-size: 42px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0 0 18px rgba(255, 255, 255, 0.92);
+    margin-bottom: 2px;
+}
+
+.hud-chip {
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 2px solid #ffffff;
+    background: rgba(14, 16, 24, 0.85);
+    color: #f5f9ff;
+    font-size: 15px;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.65);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pause-control {
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 2px solid #ffffff;
+    background: #ffffff;
+    color: #0f1726;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 160ms ease, background 160ms ease;
+}
+
+#gameCanvas {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 1 auto;
+    border: 3px solid #ffffff;
+    border-radius: 12px;
+    background: #0f2230;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    display: block;
+    margin: 0 auto;
+    touch-action: none;
+    user-select: none;
+}
+
+.pause-control:hover {
+    background: #e8edf8;
+    transform: translateY(-1px);
+}
+
+.start-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 12;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(2, 5, 10, 0.7);
+    backdrop-filter: blur(3px);
+}
+
+.start-screen.active {
+    display: flex;
+}
+
+.start-card {
+    width: min(92vw, 560px);
+    border: 3px solid #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(165deg, rgba(18, 20, 28, 0.96), rgba(9, 18, 29, 0.96));
+    box-shadow: 0 0 26px rgba(255, 255, 255, 0.32);
+}
+
+.start-card h2 {
+    font-size: clamp(34px, 6vw, 56px);
+    color: #ffffff;
+    margin-bottom: 8px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.78);
+}
+
+.start-card p {
+    font-size: 16px;
+    color: #f4e8de;
+    margin-bottom: 8px;
+}
+
+.start-card button {
+    margin-top: 12px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: 2px solid #ffffff;
+    background: #ffffff;
+    color: #101928;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.start-card button:hover {
+    background: #dfe7f5;
+}
+
+.city-strip {
+    position: relative;
+    height: 82px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #090d16;
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.3);
+}
+
+.city-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 650ms ease;
+    background-size: cover;
+    background-position: center;
+}
+
+.city-slide.active {
+    opacity: 1;
+}
+
+.city-a {
+    background:
+        linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)),
+        var(--slide-img),
+        repeating-linear-gradient(120deg, #0a2d42, #0a2d42 14px, #13435b 14px, #13435b 28px);
+}
+
+.city-b {
+    background:
+        linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.65)),
+        var(--slide-img),
+    linear-gradient(90deg, #283244, #4b5b74 50%, #1f2236 100%);
+}
+
+.city-c {
+    background:
+        linear-gradient(to right, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.66)),
+        var(--slide-img),
+        radial-gradient(circle at 15% 45%, #00b7ff 0 13%, transparent 16%),
+        radial-gradient(circle at 30% 62%, #ffffff 0 14%, transparent 17%),
+        radial-gradient(circle at 58% 30%, #10d6c6 0 13%, transparent 17%),
+        #102336;
+}
+
+.city-d {
+    background:
+        linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.64)),
+        var(--slide-img),
+        repeating-linear-gradient(90deg, #0b121f, #0b121f 20px, #16273c 20px, #16273c 40px);
+}
+
+.city-strip-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(0, 0, 0, 0.55);
+    color: #f8fbff;
+    padding: 4px 10px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 760px) {
+    .game-container {
+        padding: calc(6px + env(safe-area-inset-top)) 6px calc(6px + env(safe-area-inset-bottom));
+        gap: 8px;
+    }
+
+    .game-title {
+        font-size: 30px;
+        letter-spacing: 2px;
+    }
+
+    .hud-chip {
+        font-size: 11px;
+        padding: 5px 8px;
+        max-width: 48%;
+    }
+
+    .pause-control {
+        font-size: 11px;
+        padding: 7px 10px;
+    }
+
+    .start-card {
+        padding: 14px;
+    }
+
+    .start-card p {
+        font-size: 14px;
+    }
+
+    .city-strip {
+        height: 70px;
+    }
+
+    .city-strip-badge {
+        font-size: 10px;
+        right: 6px;
+        bottom: 6px;
+        padding: 3px 8px;
+    }
+}
+
+@media (max-width: 420px) {
+    .game-title {
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    .game-header {
+        padding: 6px;
+        gap: 4px;
+    }
+
+    .hud-chip {
+        font-size: 10px;
+        padding: 4px 6px;
+        max-width: 100%;
+    }
+
+    .pause-control {
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+
+    .start-card {
+        width: 96vw;
+        padding: 12px;
+    }
+
+    .start-card p {
+        font-size: 13px;
+    }
+}
